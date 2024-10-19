@@ -1,0 +1,7 @@
+Flask
+Flask-RESTful
+Flask-PyMongo
+Flask-Bcrypt
+Flask-JWT-Extended
+marshmallow
+python-dotenv
