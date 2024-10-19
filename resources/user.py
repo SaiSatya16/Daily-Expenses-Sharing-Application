@@ -6,6 +6,7 @@ from schemas.user import UserSchema, UserLoginSchema
 from marshmallow import ValidationError
 import logging
 from extensions import bcrypt
+from bson import ObjectId, errors as bson_errors
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +56,11 @@ class UserLogin(Resource):
 class UserResource(Resource):
     @jwt_required()
     def get(self, user_id):
+        try:
+            user_id = ObjectId(user_id)
+        except bson_errors.InvalidId:
+            return {'message': 'Invalid user ID format'}, 400
+
         user = UserModel.find_by_id(user_id)
         if not user:
             return {'message': 'User not found'}, 404

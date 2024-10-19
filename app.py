@@ -2,13 +2,14 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from resources.user import UserRegister, UserLogin, UserResource
-from resources.expense import ExpenseResource, ExpenseList, BalanceSheet
+from resources.expense import ExpenseResource, ExpenseList, OverallExpenseList
+from resources.balance_sheet import BalanceSheetResource, OverallBalanceSheetResource
 from extensions import mongo, bcrypt
-from config import DevelopmentConfig
+from config import Config
 from utils.error_handlers import register_error_handlers
 from flask_cors import CORS
 
-def create_app(config_class=DevelopmentConfig):
+def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
@@ -26,7 +27,9 @@ def create_app(config_class=DevelopmentConfig):
     api.add_resource(UserResource, '/user/<string:user_id>')
     api.add_resource(ExpenseResource, '/expense')
     api.add_resource(ExpenseList, '/expenses')
-    api.add_resource(BalanceSheet, '/balance-sheet')
+    api.add_resource(OverallExpenseList, '/overall-expenses')
+    api.add_resource(BalanceSheetResource, '/balance-sheet')
+    api.add_resource(OverallBalanceSheetResource, '/overall-balance-sheet')
 
     # Register error handlers
     register_error_handlers(app)
@@ -38,5 +41,4 @@ def create_app(config_class=DevelopmentConfig):
 
 if __name__ == '__main__':
     app = create_app()
-    app.app_context().push()
     app.run(debug=True)

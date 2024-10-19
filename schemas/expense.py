@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate, validates_schema, ValidationError, post_load
+from marshmallow import Schema, fields, validate, validates_schema, ValidationError, post_load, pre_dump
 from datetime import datetime
 
 class ExpenseSchema(Schema):
@@ -31,6 +31,16 @@ class ExpenseSchema(Schema):
 
     @post_load
     def make_expense(self, data, **kwargs):
+        if 'date' in data and isinstance(data['date'], str):
+            data['date'] = datetime.fromisoformat(data['date'])
+        return data
+
+    @pre_dump
+    def prepare_dump(self, data, **kwargs):
+        if hasattr(data, 'json'):
+            data = data.json()
+        if 'split_details' in data and 'payer_id' in data:
+            data['split_details'] = {k: v for k, v in data['split_details'].items() if k != data['payer_id']}
         if 'date' in data and isinstance(data['date'], str):
             data['date'] = datetime.fromisoformat(data['date'])
         return data
