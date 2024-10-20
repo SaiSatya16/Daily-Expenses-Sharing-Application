@@ -34,9 +34,20 @@ class ExpenseResource(Resource):
             current_user_email = payer_email
             #add the payer's percentage to the split details
             expense_data['split_details'][current_user_email] = current_user_percentage
+            expense_data.pop('user_split_percentage', None)
+        
+        if expense_data['split_method'] == 'exact':
+            current_user_amount = expense_data['user_split_amount']
+            current_user_email = payer_email
+            #add the payer's amount to the split details
+            expense_data['split_details'][current_user_email] = current_user_amount
+            expense_data.pop('user_split_amount', None)
+
+
+
         
         #remove user_split_percentage from the expense data
-            expense_data.pop('user_split_percentage', None)
+            
 
         try:
             expense = ExpenseModel(**expense_data)

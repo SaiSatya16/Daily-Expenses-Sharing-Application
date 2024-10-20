@@ -9,6 +9,7 @@ class ExpenseSchema(Schema):
     participants = fields.List(fields.Str(), required=True)
     split_method = fields.Str(required=True, validate=validate.OneOf(['equal', 'exact', 'percentage']))
     user_split_percentage = fields.Float(validate=validate.Range(min=0))
+    user_split_amount = fields.Float(validate=validate.Range(min=0))
     split_details = fields.Dict(keys=fields.Str(), values=fields.Float())
     date = fields.DateTime(dump_only=True)
 
@@ -27,10 +28,10 @@ class ExpenseSchema(Schema):
             #     # total_percentage -= data['split_details'].get(data['payer_id'], 0)
             #     if abs(total_percentage - 100) > 0.01:
             #         raise ValidationError("Total of percentages must equal 100%")
-            elif data['split_method'] == 'exact':
-                total_amount = sum(data['split_details'].values())
-                if abs(total_amount - data['amount']) > 0.01:
-                    raise ValidationError("Total of split amounts must equal the expense amount")
+            # elif data['split_method'] == 'exact':
+            #     total_amount = sum(data['split_details'].values())
+            #     if abs(total_amount - data['amount']) > 0.01:
+            #         raise ValidationError("Total of split amounts must equal the expense amount")
 
     @post_load
     def make_expense(self, data, **kwargs):

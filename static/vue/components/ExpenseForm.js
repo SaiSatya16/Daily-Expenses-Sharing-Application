@@ -1,3 +1,4 @@
+// File: static/vue/components/ExpenseForm.js
 const ExpenseForm = {
     data() {
       return {
@@ -8,6 +9,7 @@ const ExpenseForm = {
         splitMethod: 'equal',
         splitDetails: {},
         userSplitPercentage: '',
+        userSplitAmount: '',
         error: '',
         success: ''
       };
@@ -28,6 +30,8 @@ const ExpenseForm = {
   
           if (this.splitMethod === 'percentage') {
             expenseData.user_split_percentage = parseFloat(this.userSplitPercentage);
+          } else if (this.splitMethod === 'exact') {
+            expenseData.user_split_amount = parseFloat(this.userSplitAmount);
           }
   
           const response = await fetch('/expense', {
@@ -59,6 +63,7 @@ const ExpenseForm = {
         this.splitMethod = 'equal';
         this.splitDetails = {};
         this.userSplitPercentage = '';
+        this.userSplitAmount = '';
       },
       addParticipant() {
         if (this.newParticipant && !this.participants.includes(this.newParticipant)) {
@@ -75,6 +80,7 @@ const ExpenseForm = {
         if (this.splitMethod === 'equal') {
           this.splitDetails = {};
           this.userSplitPercentage = '';
+          this.userSplitAmount = '';
         } else {
           const newSplitDetails = {};
           this.participants.forEach(participant => {
@@ -83,6 +89,8 @@ const ExpenseForm = {
           this.splitDetails = newSplitDetails;
           if (this.splitMethod === 'percentage' && this.userSplitPercentage === '') {
             this.userSplitPercentage = '0';
+          } else if (this.splitMethod === 'exact' && this.userSplitAmount === '') {
+            this.userSplitAmount = '0';
           }
         }
       },
@@ -102,9 +110,12 @@ const ExpenseForm = {
         }
         if (this.splitMethod !== 'equal') {
           const totalSplit = Object.values(this.splitDetails).reduce((sum, val) => sum + parseFloat(val || 0), 0);
-          if (this.splitMethod === 'exact' && Math.abs(totalSplit - parseFloat(this.amount)) > 0.01) {
-            this.error = 'The sum of split amounts must equal the total expense amount.';
-            return false;
+          if (this.splitMethod === 'exact') {
+            const totalWithUser = totalSplit + parseFloat(this.userSplitAmount || 0);
+            if (Math.abs(totalWithUser - parseFloat(this.amount)) > 0.01) {
+              this.error = 'The sum of split amounts, including yours, must equal the total expense amount.';
+              return false;
+            }
           }
           if (this.splitMethod === 'percentage') {
             const totalWithUser = totalSplit + parseFloat(this.userSplitPercentage || 0);
@@ -163,6 +174,15 @@ const ExpenseForm = {
               <input type="number" class="form-control" id="userSplitPercentage" v-model="userSplitPercentage" step="0.01" min="0" max="100">
               <div class="input-group-append">
                 <span class="input-group-text">%</span>
+              </div>
+            </div>
+          </div>
+          <div v-if="splitMethod === 'exact'" class="form-group">
+            <label for="userSplitAmount">Your Split Amount:</label>
+            <div class="input-group mb-3">
+              <input type="number" class="form-control" id="userSplitAmount" v-model="userSplitAmount" step="0.01" min="0">
+              <div class="input-group-append">
+                <span class="input-group-text">$</span>
               </div>
             </div>
           </div>

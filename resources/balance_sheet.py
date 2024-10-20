@@ -20,7 +20,7 @@ class BalanceSheetResource(Resource):
             return send_file(
                 buffer,
                 as_attachment=True,
-                attachment_filename='balance_sheet.csv',
+                download_name='balance_sheet.csv',
                 mimetype='text/csv'
             )
         except Exception as e:
@@ -43,7 +43,7 @@ class OverallBalanceSheetResource(Resource):
             return send_file(
                 buffer,
                 as_attachment=True,
-                attachment_filename='overall_balance_sheet.csv',
+                download_name='overall_balance_sheet.csv',
                 mimetype='text/csv'
             )
         except Exception as e:
