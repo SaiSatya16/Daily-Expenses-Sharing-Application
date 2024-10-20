@@ -22,8 +22,10 @@ class ExpenseSchema(Schema):
             
             if data['split_method'] == 'percentage':
                 total_percentage = sum(data['split_details'].values())
+                #remove the payer from the split details
+                # total_percentage -= data['split_details'].get(data['payer_id'], 0)
                 if abs(total_percentage - 100) > 0.01:
-                    raise ValidationError("Total percentage must equal 100%")
+                    raise ValidationError("Total of percentages must equal 100%")
             elif data['split_method'] == 'exact':
                 total_amount = sum(data['split_details'].values())
                 if abs(total_amount - data['amount']) > 0.01:

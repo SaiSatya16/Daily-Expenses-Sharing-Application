@@ -1,0 +1,109 @@
+/* File: static/css/global.css */
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.main-container {
+  min-height: 100vh;
+  background-image: url("/static/assets/bg-3.jpg");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+}
+
+.content-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 2rem;
+}
+
+h1, h2 {
+  font-weight: bold;
+}
+
+h1 {
+  color: #41B3A3;
+}
+
+h2 {
+  color: #085F63;
+}
+
+.btn-primary {
+  background-color: #41B3A3;
+  border-color: #41B3A3;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #085F63;
+  border-color: #085F63;
+}
+
+.btn-secondary {
+  background-color: #E27D60;
+  border-color: #E27D60;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background-color: #C38D9E;
+  border-color: #C38D9E;
+}
+
+.btn-info {
+  background-color: #E8A87C;
+  border-color: #E8A87C;
+  color: white;
+}
+
+.btn-info:hover, .btn-info:focus {
+  background-color: #D8B4A0;
+  border-color: #D8B4A0;
+  color: white;
+}
+
+.navbar .nav-link.active {
+  color: #41B3A3 !important;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    width: 95%;
+    padding: 1rem !important;
+  }
+}
+
+/* Add these styles to your existing global.css file */
+
+.btn-success {
+  background-color: #56C596;
+  border-color: #56C596;
+}
+
+.btn-success:hover, .btn-success:focus {
+  background-color: #48A883;
+  border-color: #48A883;
+}
+
+.btn-dark {
+  background-color: #364F6B;
+  border-color: #364F6B;
+}
+
+.btn-dark:hover, .btn-dark:focus {
+  background-color: #2A3F56;
+  border-color: #2A3F56;
+}
+
+footer a {
+  color: #41B3A3;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #085F63;
+}
+
+.fab {
+  font-size: 1.2rem;
+}

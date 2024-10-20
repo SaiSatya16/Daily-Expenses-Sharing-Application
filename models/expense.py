@@ -1,3 +1,4 @@
+# File: models/expense.py
 from extensions import mongo
 from bson import ObjectId
 from datetime import datetime, timezone
@@ -73,13 +74,11 @@ class ExpenseModel:
         try:
             self.split_details = self.calculate_splits()
             expense_data = self.json()
-            if not self._id:
-                result = mongo.db.expenses.insert_one(expense_data)
-                self._id = result.inserted_id
-                logger.info(f"New expense created with ID: {self._id}")
-            else:
-                mongo.db.expenses.update_one({"_id": self._id}, {"$set": expense_data})
-                logger.info(f"Expense updated with ID: {self._id}")
+            if '_id' in expense_data:
+                del expense_data['_id']  # Remove _id from the data to be inserted
+            result = mongo.db.expenses.insert_one(expense_data)
+            self._id = result.inserted_id
+            logger.info(f"New expense created with ID: {self._id}")
         except Exception as e:
             logger.error(f"Error saving expense to database: {str(e)}")
             raise
