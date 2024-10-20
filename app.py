@@ -27,7 +27,7 @@ def create_app(config_class=Config):
     api.add_resource(UserRegister, '/register')
     api.add_resource(UserLogin, '/login')
     api.add_resource(UserResource, '/user/<string:user_id>')
-    api.add_resource(ExpenseResource, '/expense')
+    api.add_resource(ExpenseResource, '/expense', '/expense/<string:expense_id>') 
     api.add_resource(ExpenseList, '/expenses')
     api.add_resource(OverallExpenseList, '/overall-expenses')
     api.add_resource(BalanceSheetResource, '/balance-sheet')

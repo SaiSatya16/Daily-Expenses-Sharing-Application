@@ -8,6 +8,7 @@ class ExpenseSchema(Schema):
     description = fields.Str(required=True)
     participants = fields.List(fields.Str(), required=True)
     split_method = fields.Str(required=True, validate=validate.OneOf(['equal', 'exact', 'percentage']))
+    user_split_percentage = fields.Float(validate=validate.Range(min=0))
     split_details = fields.Dict(keys=fields.Str(), values=fields.Float())
     date = fields.DateTime(dump_only=True)
 
@@ -20,12 +21,12 @@ class ExpenseSchema(Schema):
             if not data.get('split_details') or len(data['split_details']) != len(data['participants']):
                 raise ValidationError("Split details must be provided for all participants")
             
-            if data['split_method'] == 'percentage':
-                total_percentage = sum(data['split_details'].values())
-                #remove the payer from the split details
-                # total_percentage -= data['split_details'].get(data['payer_id'], 0)
-                if abs(total_percentage - 100) > 0.01:
-                    raise ValidationError("Total of percentages must equal 100%")
+            # if data['split_method'] == 'percentage':
+            #     total_percentage = sum(data['split_details'].values())
+            #     #remove the payer from the split details
+            #     # total_percentage -= data['split_details'].get(data['payer_id'], 0)
+            #     if abs(total_percentage - 100) > 0.01:
+            #         raise ValidationError("Total of percentages must equal 100%")
             elif data['split_method'] == 'exact':
                 total_amount = sum(data['split_details'].values())
                 if abs(total_amount - data['amount']) > 0.01:

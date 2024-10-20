@@ -3,17 +3,20 @@ import ExpenseForm from './ExpenseForm.js';
 import ExpenseList from './ExpenseList.js';
 import Dashboard from './Dashboard.js';
 import BalanceSheet from './BalanceSheet.js';
+import ExpenseDetail from './ExpenseDetail.js';
 
 const userhome = {
   components: {
     ExpenseForm,
     ExpenseList,
     Dashboard,
-    BalanceSheet
+    BalanceSheet,
+    ExpenseDetail
   },
   data() {
     return {
-      activeTab: 'dashboard'
+      activeTab: 'dashboard',
+      selectedExpenseId: null
     };
   },
   methods: {
@@ -23,20 +26,23 @@ const userhome = {
       this.$router.push('/userlogin');
     },
     refreshExpenses() {
-      // Refresh dashboard data
       if (this.$refs.dashboard) {
         this.$refs.dashboard.fetchDashboardData();
       }
-      
-      // Refresh expense list if it's currently rendered
       if (this.$refs.expenseList) {
         this.$refs.expenseList.fetchExpenses();
       }
-      
-      // If we're not on the expense list tab, switch to it
       if (this.activeTab !== 'expenseList') {
         this.activeTab = 'expenseList';
       }
+    },
+    viewExpenseDetails(expenseId) {
+      this.selectedExpenseId = expenseId;
+      this.activeTab = 'expenseDetail';
+    },
+    closeExpenseDetails() {
+      this.selectedExpenseId = null;
+      this.activeTab = 'expenseList';
     }
   },
   template: `
@@ -58,10 +64,13 @@ const userhome = {
           <ExpenseForm @expense-added="refreshExpenses" />
         </div>
         <div v-if="activeTab === 'expenseList'">
-          <ExpenseList ref="expenseList" />
+          <ExpenseList ref="expenseList" @view-expense="viewExpenseDetails" />
         </div>
         <div v-if="activeTab === 'balanceSheet'">
           <BalanceSheet />
+        </div>
+        <div v-if="activeTab === 'expenseDetail'">
+          <ExpenseDetail :expenseId="selectedExpenseId" @close="closeExpenseDetails" />
         </div>
       </div>
       <button @click="logout" class="btn btn-danger mt-3">Logout</button>

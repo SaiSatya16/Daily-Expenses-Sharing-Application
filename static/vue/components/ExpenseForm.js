@@ -1,4 +1,3 @@
-// File: static/vue/components/ExpenseForm.js
 const ExpenseForm = {
     data() {
       return {
@@ -8,6 +7,7 @@ const ExpenseForm = {
         newParticipant: '',
         splitMethod: 'equal',
         splitDetails: {},
+        userSplitPercentage: '',
         error: '',
         success: ''
       };
@@ -18,19 +18,25 @@ const ExpenseForm = {
           return;
         }
         try {
+          const expenseData = {
+            amount: parseFloat(this.amount),
+            description: this.description,
+            participants: this.participants,
+            split_method: this.splitMethod,
+            split_details: this.splitDetails
+          };
+  
+          if (this.splitMethod === 'percentage') {
+            expenseData.user_split_percentage = parseFloat(this.userSplitPercentage);
+          }
+  
           const response = await fetch('/expense', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({
-              amount: parseFloat(this.amount),
-              description: this.description,
-              participants: this.participants,
-              split_method: this.splitMethod,
-              split_details: this.splitDetails
-            }),
+            body: JSON.stringify(expenseData),
           });
           const data = await response.json();
           if (response.ok) {
@@ -52,6 +58,7 @@ const ExpenseForm = {
         this.newParticipant = '';
         this.splitMethod = 'equal';
         this.splitDetails = {};
+        this.userSplitPercentage = '';
       },
       addParticipant() {
         if (this.newParticipant && !this.participants.includes(this.newParticipant)) {
@@ -67,12 +74,16 @@ const ExpenseForm = {
       updateSplitDetails() {
         if (this.splitMethod === 'equal') {
           this.splitDetails = {};
+          this.userSplitPercentage = '';
         } else {
           const newSplitDetails = {};
           this.participants.forEach(participant => {
             newSplitDetails[participant] = this.splitDetails[participant] || '';
           });
           this.splitDetails = newSplitDetails;
+          if (this.splitMethod === 'percentage' && this.userSplitPercentage === '') {
+            this.userSplitPercentage = '0';
+          }
         }
       },
       validateForm() {
@@ -95,9 +106,12 @@ const ExpenseForm = {
             this.error = 'The sum of split amounts must equal the total expense amount.';
             return false;
           }
-          if (this.splitMethod === 'percentage' && Math.abs((totalSplit + (100-totalSplit))  - 100) > 0.01) {
-            this.error = 'The sum of percentages must equal 100%.';
-            return false;
+          if (this.splitMethod === 'percentage') {
+            const totalWithUser = totalSplit + parseFloat(this.userSplitPercentage || 0);
+            if (Math.abs(totalWithUser - 100) > 0.01) {
+              this.error = 'The sum of all percentages, including yours, must equal 100%.';
+              return false;
+            }
           }
         }
         return true;
@@ -142,6 +156,15 @@ const ExpenseForm = {
               <option value="exact">Exact Amount</option>
               <option value="percentage">Percentage</option>
             </select>
+          </div>
+          <div v-if="splitMethod === 'percentage'" class="form-group">
+            <label for="userSplitPercentage">Your Split Percentage:</label>
+            <div class="input-group mb-3">
+              <input type="number" class="form-control" id="userSplitPercentage" v-model="userSplitPercentage" step="0.01" min="0" max="100">
+              <div class="input-group-append">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
           </div>
           <div v-if="splitMethod !== 'equal'" class="form-group">
             <label>Split Details:</label>

@@ -22,9 +22,21 @@ class ExpenseResource(Resource):
 
         user_id = get_jwt_identity()
         expense_data['payer_id'] = user_id
+
+        payer_email = UserModel.find_by_id(user_id).email
         
         if user_id not in expense_data['participants']:
-            expense_data['participants'] = expense_data['participants'] + [user_id]
+            # user_email = UserModel.find_by_id(user_id).email
+            expense_data['participants'] = expense_data['participants'] + [payer_email]
+        
+        if expense_data['split_method'] == 'percentage':
+            current_user_percentage = expense_data['user_split_percentage']
+            current_user_email = payer_email
+            #add the payer's percentage to the split details
+            expense_data['split_details'][current_user_email] = current_user_percentage
+        
+        #remove user_split_percentage from the expense data
+            expense_data.pop('user_split_percentage', None)
 
         try:
             expense = ExpenseModel(**expense_data)
@@ -41,6 +53,18 @@ class ExpenseResource(Resource):
         except Exception as e:
             logger.error(f"Error in ExpenseResource: {str(e)}")
             return {"message": "An error occurred adding the expense."}, 500
+    
+    @jwt_required()
+    def get(self, expense_id):
+        try:
+            expense = ExpenseModel.find_by_id(expense_id)
+            if expense:
+                return expense_schema.dump(expense), 200
+            return {"message": "Expense not found"}, 404
+        except Exception as e:
+            logger.error(f"Error in ExpenseResource GET: {str(e)}")
+            return {"message": "An error occurred retrieving the expense."}, 500
+
 
 class ExpenseList(Resource):
     @jwt_required()

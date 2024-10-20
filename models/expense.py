@@ -1,4 +1,3 @@
-# File: models/expense.py
 from extensions import mongo
 from bson import ObjectId
 from datetime import datetime, timezone
@@ -12,6 +11,8 @@ class ExpenseModel:
         self.amount = amount
         self.description = description
         self.participants = [str(p) for p in participants]
+        # if self.payer_id not in self.participants:
+        #     self.participants.append(self.payer_id)
         self.split_method = split_method
         self.split_details = split_details or {}
         self.date = self._parse_date(date) if date else datetime.now(timezone.utc)
@@ -49,22 +50,23 @@ class ExpenseModel:
             raise ValueError(f"Invalid split method: {self.split_method}")
 
     def _calculate_equal_split(self):
-        non_payer_participants = [p for p in self.participants if p != self.payer_id]
-        num_participants = len(non_payer_participants)
+        num_participants = len(self.participants)
         split_amount = self.amount / num_participants
-        result = {participant: split_amount for participant in non_payer_participants}
+        result = {participant: split_amount for participant in self.participants if participant != self.payer_id}
         logger.debug(f"Equal split calculation result: {result}")
         return result
 
     def _calculate_exact_split(self):
-        if sum(self.split_details.values()) != self.amount:
+        total_split = sum(self.split_details.values())
+        if abs(total_split - self.amount) > 0.01:  # Allow for small floating-point discrepancies
             raise ValueError("Sum of exact amounts does not match the total expense amount")
         result = {k: v for k, v in self.split_details.items() if k != self.payer_id}
         logger.debug(f"Exact split calculation result: {result}")
         return result
 
     def _calculate_percentage_split(self):
-        if sum(self.split_details.values()) != 100:
+        total_percentage = sum(self.split_details.values())
+        if abs(total_percentage - 100) > 0.01:  # Allow for small floating-point discrepancies
             raise ValueError("Sum of percentages does not equal 100%")
         result = {k: (v / 100) * self.amount for k, v in self.split_details.items() if k != self.payer_id}
         logger.debug(f"Percentage split calculation result: {result}")
@@ -84,13 +86,14 @@ class ExpenseModel:
             raise
 
     @classmethod
-    def find_by_user(cls, user_id):
+    def find_by_user(cls, payer_id):
         try:
-            expenses = list(mongo.db.expenses.find({"participants": str(user_id)}))
-            logger.info(f"Found {len(expenses)} expenses for user {user_id}")
+            expenses_cursor = mongo.db.expenses.find({"payer_id": payer_id})
+            expenses = list(expenses_cursor)
+            logger.info(f"Found {len(expenses)} expenses for user {payer_id}")
             return [cls(**expense) for expense in expenses]
         except Exception as e:
-            logger.error(f"Error finding expenses for user {user_id}: {str(e)}")
+            logger.error(f"Error finding expenses for user {payer_id}: {str(e)}")
             raise
 
     @classmethod
