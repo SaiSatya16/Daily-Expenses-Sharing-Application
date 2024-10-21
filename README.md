@@ -68,8 +68,12 @@ pip install -r requirements.txt
 
 4. Set up environment variables:
 
-Create a `.env` file in the project root with the following contents:
-```
+- currently, database is hosted on MongoDB Atlas, so you can skip this step and go ahead with the next step to run the application on my database which is already hosted on MongoDB Atlas
+- If you want to host the database on your own, then follow the below steps:
+  - Create a MongoDB Atlas account and set up a new cluster.
+  - Create a `.env` file in the project root with the following contents:
+
+```bash
 MONGO_URI=mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/daily_expenses_app
 JWT_SECRET_KEY=your-secret-key
 FLASK_DEBUG=False
