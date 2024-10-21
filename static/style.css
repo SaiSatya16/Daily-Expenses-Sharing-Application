@@ -1,109 +1,204 @@
 /* File: static/css/global.css */
 
+:root {
+  --primary-blue: #3366FF;
+  --accent-pink: #FF69B4;
+  --text-dark: #333333;
+  --bg-light: #F8F9FA;
+  --success-green: #28a745;
+  --warning-orange: #ffc107;
+  --danger-red: #dc3545;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
 }
 
 .main-container {
   min-height: 100vh;
-  background-image: url("/static/assets/bg-3.jpg");
-  background-size: cover;
-  background-position: center;
+  background-color: white;
   width: 100%;
 }
 
 .content-container {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: white;
   border-radius: 10px;
   padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 h1, h2 {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 h1 {
-  color: #41B3A3;
+  color: var(--primary-blue);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 h2 {
-  color: #085F63;
+  color: var(--text-dark);
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.btn {
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background-color: #41B3A3;
-  border-color: #41B3A3;
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
 }
 
 .btn-primary:hover, .btn-primary:focus {
-  background-color: #085F63;
-  border-color: #085F63;
+  background-color: darken(var(--primary-blue), 10%);
+  border-color: darken(var(--primary-blue), 10%);
 }
 
 .btn-secondary {
-  background-color: #E27D60;
-  border-color: #E27D60;
+  background-color: white;
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
 }
 
 .btn-secondary:hover, .btn-secondary:focus {
-  background-color: #C38D9E;
-  border-color: #C38D9E;
-}
-
-.btn-info {
-  background-color: #E8A87C;
-  border-color: #E8A87C;
+  background-color: var(--primary-blue);
   color: white;
 }
 
-.btn-info:hover, .btn-info:focus {
-  background-color: #D8B4A0;
-  border-color: #D8B4A0;
-  color: white;
+.btn-success {
+  background-color: var(--success-green);
+  border-color: var(--success-green);
 }
 
+.btn-success:hover, .btn-success:focus {
+  background-color: darken(var(--success-green), 10%);
+  border-color: darken(var(--success-green), 10%);
+}
+
+.btn-danger {
+  background-color: var(--danger-red);
+  border-color: var(--danger-red);
+}
+
+.btn-danger:hover, .btn-danger:focus {
+  background-color: darken(var(--danger-red), 10%);
+  border-color: darken(var(--danger-red), 10%);
+}
+
+.navbar {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .navbar-brand {
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.navbar .nav-link {
+  color: var(--text-dark);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
 .navbar .nav-link.active {
-  color: #41B3A3 !important;
+  color: var(--primary-blue);
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: none;
+}
+
+.card-header {
+  background-color: var(--primary-blue);
+  color: white;
+  font-weight: 600;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.form-control {
+  border-radius: 20px;
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.pagination .page-link {
+  color: var(--primary-blue);
+  border-radius: 20px;
+  margin: 0 2px;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
 }
 
 @media (max-width: 768px) {
   .content-container {
     width: 95%;
-    padding: 1rem !important;
+    padding: 1rem;
   }
 }
 
-/* Add these styles to your existing global.css file */
-
-.btn-success {
-  background-color: #56C596;
-  border-color: #56C596;
+/* Add these styles for the expense form */
+.expense-form {
+  background-color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.btn-success:hover, .btn-success:focus {
-  background-color: #48A883;
-  border-color: #48A883;
+.expense-form .form-group {
+  margin-bottom: 1.5rem;
 }
 
-.btn-dark {
-  background-color: #364F6B;
-  border-color: #364F6B;
+.expense-form .form-control {
+  border-radius: 20px;
 }
 
-.btn-dark:hover, .btn-dark:focus {
-  background-color: #2A3F56;
-  border-color: #2A3F56;
+/* Styles for the dashboard cards */
+.dashboard-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
 }
 
-footer a {
-  color: #41B3A3;
-  text-decoration: none;
+.dashboard-card h5 {
+  color: var(--primary-blue);
+  font-weight: 600;
 }
 
-footer a:hover {
-  color: #085F63;
+.dashboard-card .card-text {
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
-.fab {
-  font-size: 1.2rem;
+/* Styles for charts */
+.chart-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 2rem;
 }

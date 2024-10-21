@@ -1,358 +1,277 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Expense Sharing API",
-      "version": "1.0.0",
-      "description": "API for managing shared expenses and user accounts"
-    },
-    "servers": [
-      {
-        "url": "http://localhost:5000",
-        "description": "Development server"
-      }
-    ],
-    "paths": {
-      "/register": {
-        "post": {
-          "summary": "Register a new user",
-          "tags": ["User"],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserRegistration"
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "User created successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "User created successfully."
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Validation error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/login": {
-        "post": {
-          "summary": "User login",
-          "tags": ["User"],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserLogin"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Login successful",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "access_token": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "401": {
-              "description": "Invalid credentials",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/user/{user_id}": {
-        "get": {
-          "summary": "Get user details",
-          "tags": ["User"],
-          "security": [{ "BearerAuth": [] }],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "user_id",
-              "required": true,
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Daily Expenses Sharing API",
+    "version": "1.0.0",
+    "description": "API for managing shared expenses and user accounts"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
               "schema": {
-                "type": "string"
+                "$ref": "#/components/schemas/UserRegistration"
               }
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "User details",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/User"
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User created successfully."
+                    }
                   }
                 }
               }
-            },
-            "404": {
-              "description": "User not found",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "User login",
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    }
                   }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
+      "get": {
+        "summary": "Get user details",
+        "tags": ["User"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expense": {
+      "post": {
+        "summary": "Add a new expense",
+        "tags": ["Expense"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Expense added successfully."
+                    },
+                    "expense": {
+                      "$ref": "#/components/schemas/Expense"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
         }
       },
-      "/expense": {
-        "post": {
-          "summary": "Add a new expense",
-          "tags": ["Expense"],
-          "security": [{ "BearerAuth": [] }],
-          "requestBody": {
+      "get": {
+        "summary": "Get expense details",
+        "tags": ["Expense"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "expense_id",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Expense details",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExpenseInput"
+                  "$ref": "#/components/schemas/Expense"
                 }
               }
             }
           },
-          "responses": {
-            "201": {
-              "description": "Expense added successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": {
-                        "type": "string",
-                        "example": "Expense added successfully."
-                      },
-                      "expense": {
+          "404": {
+            "description": "Expense not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expenses": {
+      "get": {
+        "summary": "Get user expenses",
+        "tags": ["Expense"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "expenses": {
+                      "type": "array",
+                      "items": {
                         "$ref": "#/components/schemas/Expense"
                       }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "pages": {
+                      "type": "integer"
                     }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Validation error",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/expenses": {
-        "get": {
-          "summary": "Get user expenses",
-          "tags": ["Expense"],
-          "security": [{ "BearerAuth": [] }],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "page",
-              "schema": {
-                "type": "integer",
-                "default": 1
-              }
-            },
-            {
-              "in": "query",
-              "name": "per_page",
-              "schema": {
-                "type": "integer",
-                "default": 10
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "List of expenses",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "expenses": {
-                        "type": "array",
-                        "items": {
-                          "$ref": "#/components/schemas/Expense"
-                        }
-                      },
-                      "total": {
-                        "type": "integer"
-                      },
-                      "page": {
-                        "type": "integer"
-                      },
-                      "per_page": {
-                        "type": "integer"
-                      },
-                      "pages": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/overall-expenses": {
-        "get": {
-          "summary": "Get overall expenses (admin only)",
-          "tags": ["Expense"],
-          "security": [{ "BearerAuth": [] }],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "page",
-              "schema": {
-                "type": "integer",
-                "default": 1
-              }
-            },
-            {
-              "in": "query",
-              "name": "per_page",
-              "schema": {
-                "type": "integer",
-                "default": 10
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "List of overall expenses",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "expenses": {
-                        "type": "array",
-                        "items": {
-                          "$ref": "#/components/schemas/Expense"
-                        }
-                      },
-                      "total": {
-                        "type": "integer"
-                      },
-                      "page": {
-                        "type": "integer"
-                      },
-                      "per_page": {
-                        "type": "integer"
-                      },
-                      "pages": {
-                        "type": "integer"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "403": {
-              "description": "Access denied",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/balance-sheet": {
-        "get": {
-          "summary": "Get user balance sheet",
-          "tags": ["Balance Sheet"],
-          "security": [{ "BearerAuth": [] }],
-          "responses": {
-            "200": {
-              "description": "Balance sheet CSV file",
-              "content": {
-                "text/csv": {
-                  "schema": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/overall-balance-sheet": {
-        "get": {
-          "summary": "Get overall balance sheet (admin only)",
-          "tags": ["Balance Sheet"],
-          "security": [{ "BearerAuth": [] }],
-          "responses": {
-            "200": {
-              "description": "Overall balance sheet CSV file",
-              "content": {
-                "text/csv": {
-                  "schema": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            },
-            "403": {
-              "description": "Access denied",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Error"
                   }
                 }
               }
@@ -361,143 +280,336 @@
         }
       }
     },
-    "components": {
-      "schemas": {
-        "UserRegistration": {
-          "type": "object",
-          "required": ["email", "name", "mobile", "password"],
-          "properties": {
-            "email": {
-              "type": "string",
-              "format": "email"
-            },
-            "name": {
-              "type": "string"
-            },
-            "mobile": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string",
-              "format": "password"
+    "/overall-expenses": {
+      "get": {
+        "summary": "Get overall expenses (admin only)",
+        "tags": ["Expense"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "schema": {
+              "type": "integer",
+              "default": 10
             }
           }
-        },
-        "UserLogin": {
-          "type": "object",
-          "required": ["email", "password"],
-          "properties": {
-            "email": {
-              "type": "string",
-              "format": "email"
-            },
-            "password": {
-              "type": "string",
-              "format": "password"
-            }
-          }
-        },
-        "User": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string"
-            },
-            "email": {
-              "type": "string",
-              "format": "email"
-            },
-            "name": {
-              "type": "string"
-            },
-            "mobile": {
-              "type": "string"
-            }
-          }
-        },
-        "ExpenseInput": {
-          "type": "object",
-          "required": ["amount", "description", "participants", "split_method"],
-          "properties": {
-            "amount": {
-              "type": "number"
-            },
-            "description": {
-              "type": "string"
-            },
-            "participants": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "split_method": {
-              "type": "string",
-              "enum": ["equal", "exact", "percentage"]
-            },
-            "split_details": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "number"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of overall expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "expenses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Expense"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "per_page": {
+                      "type": "integer"
+                    },
+                    "pages": {
+                      "type": "integer"
+                    }
+                  }
+                }
               }
             }
-          }
-        },
-        "Expense": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string"
-            },
-            "payer_id": {
-              "type": "string"
-            },
-            "amount": {
-              "type": "number"
-            },
-            "description": {
-              "type": "string"
-            },
-            "participants": {
-              "type": "array",
-              "items": {
-                "type": "string"
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
               }
-            },
-            "split_method": {
-              "type": "string",
-              "enum": ["equal", "exact", "percentage"]
-            },
-            "split_details": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "number"
-              }
-            },
-            "date": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        },
-        "Error": {
-          "type": "object",
-          "properties": {
-            "message": {
-              "type": "string"
-            },
-            "errors": {
-              "type": "object"
             }
           }
         }
-      },
-      "securitySchemes": {
-        "BearerAuth": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+      }
+    },
+    "/balance-sheet": {
+      "get": {
+        "summary": "Get user balance sheet",
+        "tags": ["Balance Sheet"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Balance sheet CSV file",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/overall-balance-sheet": {
+      "get": {
+        "summary": "Get overall balance sheet (admin only)",
+        "tags": ["Balance Sheet"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Overall balance sheet CSV file",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Get user dashboard data",
+        "tags": ["Dashboard"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Dashboard data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_expenses": {
+                      "type": "number"
+                    },
+                    "owned_amount": {
+                      "type": "number"
+                    },
+                    "owed_amount": {
+                      "type": "number"
+                    },
+                    "recent_expenses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RecentExpense"
+                      }
+                    },
+                    "expense_history": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ExpenseHistoryEntry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistration": {
+        "type": "object",
+        "required": ["email", "name", "mobile", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          }
+        }
+      },
+      "ExpenseInput": {
+        "type": "object",
+        "required": ["amount", "description", "participants", "split_method"],
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "split_method": {
+            "type": "string",
+            "enum": ["equal", "exact", "percentage"]
+          },
+          "split_details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "user_split_percentage": {
+            "type": "number"
+          },
+          "user_split_amount": {
+            "type": "number"
+          }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "payer_id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "split_method": {
+            "type": "string",
+            "enum": ["equal", "exact", "percentage"]
+          },
+          "split_details": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RecentExpense": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ExpenseHistoryEntry": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   }
+}

@@ -48,32 +48,39 @@ const userhome = {
   template: `
     <div class="container mt-5">
       <h1 class="text-center mb-4">Welcome to Your Dashboard</h1>
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button class="nav-link" :class="{ active: activeTab === 'dashboard' }" @click="activeTab = 'dashboard'">Dashboard</button>
-          <button class="nav-link" :class="{ active: activeTab === 'addExpense' }" @click="activeTab = 'addExpense'">Add Expense</button>
-          <button class="nav-link" :class="{ active: activeTab === 'expenseList' }" @click="activeTab = 'expenseList'">Expense List</button>
-          <button class="nav-link" :class="{ active: activeTab === 'balanceSheet' }" @click="activeTab = 'balanceSheet'">Balance Sheet</button>
-        </div>
-      </nav>
-      <div class="tab-content mt-3">
-        <div v-if="activeTab === 'dashboard'">
-          <Dashboard ref="dashboard" />
-        </div>
-        <div v-if="activeTab === 'addExpense'">
-          <ExpenseForm @expense-added="refreshExpenses" />
-        </div>
-        <div v-if="activeTab === 'expenseList'">
-          <ExpenseList ref="expenseList" @view-expense="viewExpenseDetails" />
-        </div>
-        <div v-if="activeTab === 'balanceSheet'">
-          <BalanceSheet />
-        </div>
-        <div v-if="activeTab === 'expenseDetail'">
-          <ExpenseDetail :expenseId="selectedExpenseId" @close="closeExpenseDetails" />
+      <div class="content-container">
+        <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: activeTab === 'dashboard' }" @click="activeTab = 'dashboard'">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: activeTab === 'addExpense' }" @click="activeTab = 'addExpense'">Add Expense</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: activeTab === 'expenseList' }" @click="activeTab = 'expenseList'">Expense List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" :class="{ active: activeTab === 'balanceSheet' }" @click="activeTab = 'balanceSheet'">Balance Sheet</a>
+          </li>
+        </ul>
+        <div class="tab-content mt-3">
+          <div v-if="activeTab === 'dashboard'">
+            <Dashboard ref="dashboard" />
+          </div>
+          <div v-if="activeTab === 'addExpense'">
+            <ExpenseForm @expense-added="refreshExpenses" />
+          </div>
+          <div v-if="activeTab === 'expenseList'">
+            <ExpenseList ref="expenseList" @view-expense="viewExpenseDetails" />
+          </div>
+          <div v-if="activeTab === 'balanceSheet'">
+            <BalanceSheet />
+          </div>
+          <div v-if="activeTab === 'expenseDetail'">
+            <ExpenseDetail :expenseId="selectedExpenseId" @close="closeExpenseDetails" />
+          </div>
         </div>
       </div>
-      <button @click="logout" class="btn btn-danger mt-3">Logout</button>
     </div>
   `
 };
