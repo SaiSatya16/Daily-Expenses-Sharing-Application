@@ -5,3 +5,5 @@ Flask-Bcrypt
 Flask-JWT-Extended
 marshmallow
 python-dotenv
+flask_cors
+flask_swagger_ui
