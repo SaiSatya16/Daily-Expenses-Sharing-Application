@@ -55,6 +55,11 @@ git clone https://github.com/yourusername/daily-expenses-sharing.git
 cd daily-expenses-sharing
 ```
 
+- you can setup the application locally or using Docker
+- follow the below steps for local setup or docker setup
+
+### Local Setup
+
 2. Create a virtual environment and activate it:
 ```bash
 python -m venv venv
@@ -86,6 +91,29 @@ Replace `<username>`, `<password>`, and `<cluster-name>` with your actual MongoD
 ```bash
 python app.py
 ```
+
+## Docker Setup
+
+1. Build and start the Docker containers:
+
+```bash
+
+docker compose up --build
+
+```
+
+5. The application will be available at http://localhost:5000
+
+To stop the application, use:
+
+```bash
+
+docker compose down
+
+```
+
+
+
 
 ## Project Structure
 
