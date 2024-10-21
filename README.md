@@ -15,13 +15,13 @@ Daily Expenses Sharing is a Flask-RESTful application that provides an API for m
 - Unit tests for all major functionalities
 - Vue.js frontend for user interaction
 
-<!-- ### Application currently live at [Daily Expenses Sharing](http://your-app-url.com)
+### Application currently live at [Daily Expenses Sharing](http://satyaprojects.ap-south-1.elasticbeanstalk.com/daily-expenses-app)
 
-### API Documentation available at [API Documentation](http://your-app-url.com/api/docs/)
+### API Documentation available at [API Documentation](http://satyaprojects.ap-south-1.elasticbeanstalk.com/api/expense-app/docs/)
 
 - Deployed on AWS Elastic Beanstalk and MongoDB Atlas cloud services.
 - The application is secured with JWT tokens.
-- Employed AWS CodePipeline for CI/CD pipeline to deploy the application on AWS Elastic Beanstalk connected to the GitHub repository. -->
+- Employed AWS CodePipeline for CI/CD pipeline to deploy the application on AWS Elastic Beanstalk connected to the GitHub repository.
 
 ## Screenshots
 
