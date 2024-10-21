@@ -5,6 +5,19 @@ import json
 from config import TestConfig
 import jwt
 
+class VerboseTestRunner(unittest.TextTestRunner):
+    def __init__(self, stream=None, descriptions=True, verbosity=2, failfast=False, buffer=False, resultclass=None, warnings=None, *, tb_locals=False):
+        super().__init__(stream, descriptions, verbosity, failfast, buffer, resultclass, warnings, tb_locals=tb_locals)
+
+    def run(self, test):
+        result = super().run(test)
+        print("\nTest Summary:")
+        print(f"Ran {result.testsRun} tests")
+        print(f"Successes: {result.testsRun - len(result.failures) - len(result.errors)}")
+        print(f"Failures: {len(result.failures)}")
+        print(f"Errors: {len(result.errors)}")
+        return result
+
 class TestApp(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -23,6 +36,10 @@ class TestApp(unittest.TestCase):
     def tearDownClass(cls):
         with cls.app.app_context():
             mongo.cx.close()
+
+    def get_user_id_from_token(self, token):
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        return decoded['sub']
 
     def test_user_registration(self):
         response = self.client.post('/register', json={
@@ -57,7 +74,7 @@ class TestApp(unittest.TestCase):
             json={
                 'amount': 3000,
                 'description': 'Dinner',
-                'participants': ['test@example.com', 'friend1@example.com', 'friend2@example.com'],
+                'participants': ['friend1@example.com', 'friend2@example.com'],
                 'split_method': 'equal',
                 'split_details': {}
             })
@@ -65,8 +82,7 @@ class TestApp(unittest.TestCase):
         data = response.get_json()
         self.assertIn('Expense added successfully', data['message'])
         self.assertEqual(data['expense']['amount'], 3000)
-        self.assertEqual(len(data['expense']['split_details']), 3) 
-        self.assertNotIn(data['expense']['payer_id'], data['expense']['split_details'])
+        self.assertEqual(len(data['expense']['split_details']), 3)
         for participant, amount in data['expense']['split_details'].items():
             self.assertEqual(amount, 1000)  # Each participant should owe 1000
 
@@ -77,20 +93,19 @@ class TestApp(unittest.TestCase):
             json={
                 'amount': 4299,
                 'description': 'Shopping',
-                'participants': ['test@example.com', 'friend1@example.com', 'friend2@example.com'],
+                'participants': ['friend1@example.com', 'friend2@example.com'],
                 'split_method': 'exact',
                 'split_details': {
-                    'test@example.com': 1500,
                     'friend1@example.com': 799,
                     'friend2@example.com': 2000
-                }
+                },
+                'user_split_amount': 1500
             })
         self.assertEqual(response.status_code, 201)
         data = response.get_json()
         self.assertIn('Expense added successfully', data['message'])
         self.assertEqual(data['expense']['amount'], 4299)
         self.assertEqual(len(data['expense']['split_details']), 3)
-        self.assertNotIn(data['expense']['payer_id'], data['expense']['split_details'])
         self.assertEqual(data['expense']['split_details'].get('friend1@example.com'), 799)
         self.assertEqual(data['expense']['split_details'].get('friend2@example.com'), 2000)
 
@@ -101,20 +116,19 @@ class TestApp(unittest.TestCase):
             json={
                 'amount': 1000,
                 'description': 'Party',
-                'participants': ['test@example.com', 'friend1@example.com', 'friend2@example.com'],
+                'participants': ['friend1@example.com', 'friend2@example.com'],
                 'split_method': 'percentage',
                 'split_details': {
-                    'test@example.com': 50,
                     'friend1@example.com': 25,
                     'friend2@example.com': 25
-                }
+                },
+                'user_split_percentage': 50
             })
         self.assertEqual(response.status_code, 201)
         data = response.get_json()
         self.assertIn('Expense added successfully', data['message'])
         self.assertEqual(data['expense']['amount'], 1000)
-        self.assertEqual(len(data['expense']['split_details']), 3)  
-        self.assertNotIn(data['expense']['payer_id'], data['expense']['split_details'])
+        self.assertEqual(len(data['expense']['split_details']), 3)
         self.assertEqual(data['expense']['split_details'].get('friend1@example.com'), 250)
         self.assertEqual(data['expense']['split_details'].get('friend2@example.com'), 250)
 
@@ -125,7 +139,7 @@ class TestApp(unittest.TestCase):
             json={
                 'amount': 100,
                 'description': 'Test expense',
-                'participants': ['test@example.com'],
+                'participants': ['friend1@example.com'],
                 'split_method': 'equal',
                 'split_details': {}
             })
@@ -141,5 +155,19 @@ class TestApp(unittest.TestCase):
         decoded = jwt.decode(token, options={"verify_signature": False})
         return decoded['sub']
 
+    @classmethod
+    def get_access_token(cls):
+        cls.client.post('/register', json={
+            'email': 'test@example.com',
+            'name': 'Test User',
+            'mobile': '1234567890',
+            'password': 'testpassword'
+        })
+        response = cls.client.post('/login', json={
+            'email': 'test@example.com',
+            'password': 'testpassword'
+        })
+        return response.get_json()['access_token']
+
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testRunner=VerboseTestRunner())
